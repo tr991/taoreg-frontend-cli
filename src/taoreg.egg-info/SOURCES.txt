@@ -1,0 +1,13 @@
+LICENSE
+README.md
+pyproject.toml
+src/taoreg/__init__.py
+src/taoreg/bootcli.py
+src/taoreg/pcli.py
+src/taoreg/version.py
+src/taoreg.egg-info/PKG-INFO
+src/taoreg.egg-info/SOURCES.txt
+src/taoreg.egg-info/dependency_links.txt
+src/taoreg.egg-info/entry_points.txt
+src/taoreg.egg-info/requires.txt
+src/taoreg.egg-info/top_level.txt

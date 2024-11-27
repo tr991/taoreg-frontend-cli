@@ -1,0 +1,1 @@
+__version__ = "0.1.1"  # Fresh start with new name

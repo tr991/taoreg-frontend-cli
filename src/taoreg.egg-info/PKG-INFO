@@ -1,0 +1,54 @@
+Metadata-Version: 2.1
+Name: taoreg
+Version: 0.1.1
+Summary: Advanced registration system for Bittensor network
+Author-email: hodler0 <bittensor0@gmail.com>
+Project-URL: Homepage, https://www.taoreg.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: bittensor
+Requires-Dist: substrate-interface
+Requires-Dist: rich
+Requires-Dist: python-socketio[client]
+Requires-Dist: requests
+
+# Bittensor Registration CLI
+
+The most advanced registration system for Bittensor network. This tool provides a user-friendly command-line interface for registering nodes on the Bittensor network.
+
+## Installation
+
+```bash
+pip install taoreg
+```
+
+## Features
+
+- Interactive CLI with rich terminal interface
+- Real-time registration status monitoring
+- Support for custom mnemonics and network UIDs
+- Automatic fee management
+- Socket-based status updates
+
+## Usage
+
+After installation, you can run the registration tool using:
+
+```bash
+taoreg
+```
+
+## Requirements
+
+- Python 3.10
+- bittensor
+- rich
+- python-socketio
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

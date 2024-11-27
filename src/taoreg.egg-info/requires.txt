@@ -1,0 +1,5 @@
+bittensor
+substrate-interface
+rich
+python-socketio[client]
+requests

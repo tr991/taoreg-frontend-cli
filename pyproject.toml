@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "taoreg"
+dynamic = ["version"]
+authors = [
+    { name = "hodler0", email = "bittensor0@gmail.com" },
+]
+description = "Advanced registration system for Bittensor network"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "bittensor",
+    "substrate-interface",
+    "rich",
+    "python-socketio[client]",
+    "requests"
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "taoreg.version.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["taoreg*"]
+
+[project.urls]
+"Homepage" = "https://www.taoreg.com"
+
+[project.scripts]
+taoreg = "taoreg.bootcli:main"
