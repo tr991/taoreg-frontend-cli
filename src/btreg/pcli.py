@@ -55,10 +55,10 @@ POLL_INTERVAL = 5
 chk_str = "✅"
 
 DEFAULT_VALUES = {
-    'netuid': '18',
-    'max_fee': "1.4",
-    'coldkey_mnemonic': "wreck random crumble seed absent whale all deliver text fame clip inspire",
-    'hotkey_mnemonic': "near green almost science unaware deliver practice marble addict jeans retreat mouse"
+    'netuid': '',
+    'max_fee': "",
+    'coldkey_mnemonic': "",
+    'hotkey_mnemonic': ""
 }
 
 class RegistrationError(Exception):
@@ -301,6 +301,48 @@ class RegistrationCLI:
         
         self.console.print(table)
 
+    def decode_extrinsic(self, hex_data: str) -> dict:
+        try:
+            # Ensure runtime metadata is available
+            self.subtensor.substrate.get_runtime_metadata()
+
+            # Decode the extrinsic (adjust argument based on library)
+            decoded = self.subtensor.substrate.decode_scale(
+                type_string="Extrinsic",  # Decode as a full extrinsic
+                data=bytes.fromhex(hex_data[2:])  # Convert hex string to bytes, removing '0x'
+            )
+
+            # Extract and process decoded details
+            call_module = decoded.value.get('call', {}).get('call_module', None)
+            call_function = decoded.value.get('call', {}).get('call_function', None)
+            call_args = decoded.value.get('call', {}).get('call_args', {})
+
+            if call_module == 'SubtensorModule':
+                return {
+                    "call": "Registration",
+                    "module": call_module,
+                    "function": call_function,
+                    "netuid": call_args.get('netuid'),
+                    "hotkey": call_args.get('hotkey')
+                }
+            elif call_module == 'Balances':
+                value_tao = float(call_args.get('value', 0)) / 1e9
+                return {
+                    "call": "Transfer",
+                    "module": call_module,
+                    "function": call_function,
+                    "destination": call_args.get('dest'),
+                    "amount": f"{value_tao:.4f} τ"
+                }
+            
+            # Handle unknown modules or structures
+            return {"raw": str(decoded)}
+        except Exception as e:
+            self.console.print(f"[yellow]Decode error: {str(e)}[/yellow]")
+            return {}
+
+
+        
     async def main(self):
         self.console.clear()
         self.show_welcome()
@@ -329,6 +371,19 @@ class RegistrationCLI:
                             inputs['netuid'],
                             inputs['max_fee']
                         )
+                        with self.subtensor.substrate as substrate: 
+                            print(prep_result)
+                            reg_call = self.decode_extrinsic(prep_result['unsigned_extrinsic'])
+                            transfer_call = self.decode_extrinsic(prep_result['unsigned_transfer_extrinsic'])
+
+                            self.console.print("\n[bold cyan]Review the transactions you're signing:[/bold cyan]")
+                            self.console.print("\n[bold]1. Registration Call:[/bold]")
+                            self.console.print(Panel(json.dumps(reg_call, indent=2)))
+                            self.console.print("\n[bold]2. Transfer Call:[/bold]")
+                            self.console.print(Panel(json.dumps(transfer_call, indent=2)))
+
+                        if not Confirm.ask("\nProceed with signing?", default=True):
+                            return
                         
                         if prep_result is None:
                             raise RegistrationError("Preparation failed")
